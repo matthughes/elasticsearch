@@ -22,7 +22,6 @@ package org.elasticsearch.action.bulk;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.ElasticsearchParseException;
 import org.elasticsearch.ExceptionsHelper;
@@ -55,16 +54,11 @@ import org.elasticsearch.index.Index;
 import org.elasticsearch.index.shard.ShardId;
 import org.elasticsearch.indices.IndexAlreadyExistsException;
 import org.elasticsearch.indices.IndexClosedException;
-import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.threadpool.ThreadPool;
 import org.elasticsearch.transport.TransportService;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -368,10 +362,6 @@ public class TransportBulkAction extends HandledTransportAction<BulkRequest, Bul
                 concreteIndex = concreteIndices.resolveIfAbsent(request.index(), request.indicesOptions());
             } catch (IndexClosedException ice) {
                 unavailableException = ice;
-            } catch (IndexMissingException ime) {
-                // Fix for issue where bulk request references an index that
-                // cannot be auto-created see issue #8125
-                unavailableException = ime;
             }
         }
         if (unavailableException == null) {
